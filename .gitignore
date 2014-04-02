@@ -2,3 +2,5 @@
 *.out
 build
 *.gch
+bulid
+libmymalloc*.a
