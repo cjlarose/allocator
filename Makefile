@@ -28,7 +28,7 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 
 .PHONY: test
 test: libmymalloc1
-	gcc -lpthread libmymalloc1.a -O sample_test.c
+	gcc -pthread -O sample_test.c libmymalloc1.a
 	./sample_test.a
 
 clean:
