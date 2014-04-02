@@ -27,7 +27,7 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 	ar -rv libmymalloc4.a $(BUILD_DIR)/libmymalloc4.o
 
 test: libmymalloc1
-	gcc -g -pthread -o test sample_test.c libmymalloc1.a
+	gcc -g -pthread -o test sample_test.c -L. -lmymalloc1
 
 clean:
 	rm -f $(BUILD_DIR)/* *.a
