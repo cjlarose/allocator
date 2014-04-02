@@ -1,7 +1,7 @@
 #include "allocator.hpp"
 #include "sequential_allocator.hpp"
 #include "parallel_allocator.hpp"
-#include "libmymalloc.h"
+#include "libmymalloc.hpp"
 
 #ifdef PROG1
 SequentialAllocator<false> *alloc;
