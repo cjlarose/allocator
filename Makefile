@@ -1,5 +1,5 @@
 CC=g++
-CCFLAGS=--std=c++0x
+CCFLAGS=--std=c++0x -g
 
 INCLUDE_DIR=include
 HEADERS=$(shell ls $(INCLUDE_DIR)/*.hpp)
@@ -26,10 +26,8 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 	$(CC) $(CCFLAGS) -I $(INCLUDE_DIR) -pthread -D PROG4 -o $(BUILD_DIR)/libmymalloc4.o -c $<
 	ar -rv libmymalloc4.a $(BUILD_DIR)/libmymalloc4.o
 
-.PHONY: test
 test: libmymalloc1
-	gcc -pthread -O sample_test.c libmymalloc1.a
-	./sample_test.a
+	gcc -g -pthread -o test sample_test.c libmymalloc1.a
 
 clean:
 	rm -f $(BUILD_DIR)/* *.a
