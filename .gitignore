@@ -1,6 +1,4 @@
 *.swp
 *.out
-build
 *.gch
-bulid
 libmymalloc*.a
