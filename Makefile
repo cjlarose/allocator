@@ -26,5 +26,10 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 	$(CC) $(CFLAGS) -I $(INCLUDE_DIR) -pthread -D PROG4 -o $(BUILD_DIR)/libmymalloc4.o -c $<
 	ar -rv libmymalloc4.a $(BUILD_DIR)/libmymalloc4.o
 
+.PHONY: test
+test:
+	gcc -lpthread libmymalloc1.a -O sample_test.c
+	./sample_test.a
+
 clean:
 	rm -f $(BUILD_DIR)/* *.a
