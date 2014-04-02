@@ -3,6 +3,8 @@
 #include "parallel_allocator.hpp"
 #include "libmymalloc.hpp"
 
+extern "C" {
+
 #ifdef PROG1
 SequentialAllocator<false> *alloc;
 int myInit(int num_cores) {
@@ -37,4 +39,6 @@ void *myMalloc(int size) {
 
 void myFree(void *ptr) {
     alloc->free(ptr);
+}
+
 }
