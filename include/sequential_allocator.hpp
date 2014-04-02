@@ -15,12 +15,13 @@ struct FreeListNode {
 template<bool synchronized>
 class SequentialAllocator: public Allocator {
     public:
-        void malloc(int size);
+        SequentialAllocator();
+        void *malloc(int size);
         void free(void *ptr);
     private:
         FreeListNode<64> small_list[4096];
         FreeListNode<1024> large_list[256];
-        std::mutex mutex;
+        //std::mutex mutex;
 };
 
 #endif

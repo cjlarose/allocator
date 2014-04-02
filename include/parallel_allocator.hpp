@@ -10,7 +10,7 @@ template<bool overflow>
 class ParallelAllocator: public Allocator {
     public:
         ParallelAllocator(int num_cores);
-        void malloc(int size);
+        void *malloc(int size);
         void free(void *ptr);
     private:
         std::vector<SequentialAllocator<false>> allocators;

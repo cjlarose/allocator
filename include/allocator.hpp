@@ -3,7 +3,7 @@
 
 class Allocator {
 public:
-    virtual void malloc(int size) = 0;
+    virtual void *malloc(int size) = 0;
     virtual void free(void *ptr) = 0;
 };
 
