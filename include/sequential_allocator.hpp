@@ -24,4 +24,17 @@ class SequentialAllocator: public Allocator {
         //std::mutex mutex;
 };
 
+template <bool synchronized>
+SequentialAllocator<synchronized>::SequentialAllocator() {
+}
+
+template <bool synchronized>
+void *SequentialAllocator<synchronized>::malloc(int size) {
+    return NULL;
+}
+
+template <bool synchronized>
+void SequentialAllocator<synchronized>::free(void *ptr) {
+}
+
 #endif
