@@ -2,47 +2,59 @@
 #define _SEQ_ALLOC_HPP_ 
 
 #include <cstddef>
+#include <assert.h>
 #include "allocator.hpp"
 
 template<std::size_t block_size>
 struct FreeListNode {
-    int size;
+    int size = block_size;
     struct FreeListNode *next;
     char data[block_size];
 };
 
-const int NUM_SMALL_BLOCKS = 4096;
-const int NUM_LARGE_BLOCKS = 256;
+template<int length, std::size_t block_size>
+class FreeList {
+    public:
+        FreeList();
+        void *pop();
+        void push(void *ptr);
+    private:
+        FreeListNode<block_size> nodes[length];
+        FreeListNode<block_size> *head;
+};
 
-const std::size_t SMALL_BLOCK_SZ = 64;
-const std::size_t LARGE_BLOCK_SZ = 1024;
+template<int length, std::size_t block_size>
+FreeList<length, block_size>::FreeList() {
+    for (int i = 0; i < length; ++i)
+        nodes[i].next = &nodes[i+1];
+    nodes[length - 1].next = NULL;
+}
+
+template<int length, std::size_t block_size>
+void *FreeList<length, block_size>::pop() {
+    auto client_block = head;
+    if (client_block == NULL) {
+        assert("Insufficient memory");
+        return NULL;
+    }
+    head = client_block->next;
+    return client_block;
+}
 
 class SequentialAllocator: public Allocator {
     public:
-        SequentialAllocator();
         void *malloc(int size);
         void free(void *ptr);
     private:
-        FreeListNode<SMALL_BLOCK_SZ> small_list[NUM_SMALL_BLOCKS];
-        FreeListNode<LARGE_BLOCK_SZ> large_list[NUM_LARGE_BLOCKS];
+        FreeList<4096, 64> small_list;
+        FreeList<256, 1024> large_list;
 };
 
-SequentialAllocator::SequentialAllocator() {
-    for (int i = 0; i < NUM_SMALL_BLOCKS; ++i) {
-        small_list[i].size = SMALL_BLOCK_SZ;
-        small_list[i].next = &small_list[i+1];
-    }
-    small_list[NUM_SMALL_BLOCKS - 1].next = NULL;
-
-    for (int i = 0; i < NUM_LARGE_BLOCKS; ++i) {
-        large_list[i].size = LARGE_BLOCK_SZ;
-        large_list[i].next = &large_list[i+1];
-    }
-    large_list[NUM_LARGE_BLOCKS - 1].next = NULL;
-}
-
 void *SequentialAllocator::malloc(int size) {
-    return NULL;
+    if (size > 64)
+        return large_list.pop();
+    else
+        return small_list.pop();
 }
 
 void SequentialAllocator::free(void *ptr) {
