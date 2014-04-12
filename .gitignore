@@ -1,3 +1,4 @@
 *.swp
 *.out
 libmymalloc*.a
+.nfs*
