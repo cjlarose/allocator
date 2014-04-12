@@ -17,7 +17,7 @@ class FreeList {
     public:
         FreeList();
         void *pop();
-        void push(void *ptr);
+        void push(void *node);
     private:
         FreeListNode<block_size> nodes[length];
         FreeListNode<block_size> *head;
@@ -28,6 +28,7 @@ FreeList<length, block_size>::FreeList() {
     for (int i = 0; i < length; ++i)
         nodes[i].next = &nodes[i+1];
     nodes[length - 1].next = NULL;
+    head = nodes;
 }
 
 template<int length, std::size_t block_size>
@@ -39,6 +40,11 @@ void *FreeList<length, block_size>::pop() {
     }
     head = client_block->next;
     return &client_block->data;
+}
+
+template<int length, std::size_t block_size>
+void FreeList<length, block_size>::push(void *node) {
+    head = (FreeListNode<block_size> *) node;
 }
 
 class SequentialAllocator: public Allocator {
@@ -58,6 +64,12 @@ void *SequentialAllocator::malloc(int size) {
 }
 
 void SequentialAllocator::free(void *ptr) {
+    char *block_start = ((char *) ptr) - sizeof(void *) - sizeof(int);
+    int block_size = *((int *) block_start);
+    if (block_size > 64)
+        large_list.push((void *) block_start);
+    else
+        small_list.push((void *) block_start);
 }
 
 #endif
