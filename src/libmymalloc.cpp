@@ -3,30 +3,28 @@
 #include "parallel_allocator.hpp"
 #include "libmymalloc.hpp"
 
-extern "C" {
-
 #ifdef PROG1
-SequentialAllocator<false> *alloc;
+SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = SequentialAllocator<false>();
+    auto myalloc = SequentialAllocator();
 #endif
 
 #ifdef PROG2
-SequentialAllocator<true> *alloc;
+SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = SequentialAllocator<true>();
+    auto myalloc = SequentialAllocator();
 #endif
 
 #ifdef PROG3
-ParallelAllocator<false> *alloc;
+ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = ParallelAllocator<false>(num_cores);
+    auto myalloc = ParallelAllocator(num_cores);
 #endif
 
 #ifdef PROG4
-ParallelAllocator<true> *alloc;
+ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = ParallelAllocator<true>(num_cores);
+    auto myalloc = ParallelAllocator(num_cores);
 #endif
 
     alloc = &myalloc;
@@ -39,6 +37,4 @@ void *myMalloc(int size) {
 
 void myFree(void *ptr) {
     alloc->free(ptr);
-}
-
 }

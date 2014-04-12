@@ -12,7 +12,6 @@ struct FreeListNode {
     char data[block_size];
 };
 
-template<bool synchronized>
 class SequentialAllocator: public Allocator {
     public:
         SequentialAllocator();
@@ -24,17 +23,14 @@ class SequentialAllocator: public Allocator {
         //std::mutex mutex;
 };
 
-template <bool synchronized>
-SequentialAllocator<synchronized>::SequentialAllocator() {
+SequentialAllocator::SequentialAllocator() {
 }
 
-template <bool synchronized>
-void *SequentialAllocator<synchronized>::malloc(int size) {
+void *SequentialAllocator::malloc(int size) {
     return NULL;
 }
 
-template <bool synchronized>
-void SequentialAllocator<synchronized>::free(void *ptr) {
+void SequentialAllocator::free(void *ptr) {
 }
 
 #endif
