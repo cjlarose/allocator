@@ -7,7 +7,8 @@
 
 template<std::size_t block_size>
 struct FreeListNode {
-    int size = block_size;
+    //int size = block_size; If I was using a real C++ compiler D:
+    int size;
     struct FreeListNode *next;
     char data[block_size];
 };
@@ -25,8 +26,10 @@ class FreeList {
 
 template<int length, std::size_t block_size>
 FreeList<length, block_size>::FreeList() {
-    for (int i = 0; i < length; ++i)
+    for (int i = 0; i < length; ++i) {
         nodes[i].next = &nodes[i+1];
+        nodes[i].size = block_size;
+    }
     nodes[length - 1].next = NULL;
     head = nodes;
 }
