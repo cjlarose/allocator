@@ -77,16 +77,6 @@ for dir in $DIRS; do
     popd &> /dev/null
 done
 
-# git rid of old binaries
-make clean &> /dev/null
-
-# make ALL the things!
-make all &> /dev/null
-if [ $? -ne 0 ]; then
-    err "Failed to compile code. Rage quitting..."
-    exit 1
-fi
-
 # Run each test
 for dir in $DIRS; do
 
@@ -112,7 +102,7 @@ for dir in $DIRS; do
         fi
 
         # Compile the test
-        gcc -O2 $file -L$CODE_DIR $lib -lpthread &> $TEMP_FILE
+        gcc -O2 $file -L$CODE_DIR $lib -lpthread -lstdc++ &> $TEMP_FILE
         if [ $? -ne 0 ]; then
             err "Failed to compile $file. Rage quitting..."
             cat $TEMP_FILE
