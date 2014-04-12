@@ -38,7 +38,7 @@ void *FreeList<length, block_size>::pop() {
         return NULL;
     }
     head = client_block->next;
-    return client_block;
+    return &client_block->data;
 }
 
 class SequentialAllocator: public Allocator {
