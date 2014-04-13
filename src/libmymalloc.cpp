@@ -4,10 +4,10 @@
 #include "libmymalloc.hpp"
 
 #ifdef PROG1
-SequentialAllocator *alloc;
+SequentialAllocator<> *alloc;
 int myInit(int num_cores) {
     try {
-        alloc = new SequentialAllocator();
+        alloc = new SequentialAllocator<>();
 #endif
 
 #ifdef PROG2

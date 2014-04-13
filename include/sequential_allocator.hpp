@@ -5,23 +5,26 @@
 #include "allocator.hpp"
 #include "free_list.hpp"
 
+template <int num_small_blocks = 4096, int num_large_blocks = 256>
 class SequentialAllocator: public Allocator {
     public:
         void *malloc(int size);
         void free(void *ptr);
     private:
-        FreeList<4096, 64> small_list;
-        FreeList<256, 1024> large_list;
+        FreeList<num_small_blocks, 64> small_list;
+        FreeList<num_large_blocks, 1024> large_list;
 };
 
-void *SequentialAllocator::malloc(int size) {
+template <int sm_cnt, int lg_cnt>
+void *SequentialAllocator<sm_cnt, lg_cnt>::malloc(int size) {
     if (size > 64)
         return large_list.pop();
     else
         return small_list.pop();
 }
 
-void SequentialAllocator::free(void *ptr) {
+template <int sm_cnt, int lg_cnt>
+void SequentialAllocator<sm_cnt, lg_cnt>::free(void *ptr) {
     char *block_start = ((char *) ptr) - offsetof(FreeListNode<64>, data);
     int block_size = *((int *) block_start);
     if (block_size > 64)
@@ -35,7 +38,7 @@ class SynchronizedSequentialAllocator: public Allocator {
         void *malloc(int size);
         void free(void *ptr);
     private:
-        SequentialAllocator alloc;
+        SequentialAllocator<4096 * 8, 256 * 8> alloc;
         std::mutex mtx;
 };
 

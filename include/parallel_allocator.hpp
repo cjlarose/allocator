@@ -12,7 +12,7 @@ class ParallelAllocator: public Allocator {
         void *malloc(int size);
         void free(void *ptr);
     private:
-        std::vector<SequentialAllocator> allocators;
+        std::vector<SequentialAllocator<>> allocators;
 };
 
 #endif
