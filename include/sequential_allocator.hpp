@@ -44,8 +44,9 @@ class SynchronizedSequentialAllocator: public Allocator {
 
 void *SynchronizedSequentialAllocator::malloc(int size) {
     mtx.lock();
-    alloc.malloc(size);
+    void *ptr = alloc.malloc(size);
     mtx.unlock();
+    return ptr;
 }
 
 void SynchronizedSequentialAllocator::free(void *ptr) {
