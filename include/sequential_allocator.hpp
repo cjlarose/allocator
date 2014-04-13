@@ -69,8 +69,19 @@ void *SequentialAllocator::malloc(int size) {
         return small_list.pop();
 }
 
+/*
+ * Free a node by calculating the offset between between the data member passed
+ * in as a void * and the top of the FreeListNode struct. The offset
+ * calculation here is technically not portable due to structure alignment
+ * rules of the compiler. For example, if the compiler decides to align
+ * FreeListNode structure members to 16 bytes, this will fail, but this
+ * probably would only happen on a machine with a word size of 16 bytes. If
+ * you're running my code on such a machine, you probably have bigger problems
+ * than this. The pointer arithmetic used here should be fine on any reasonable
+ * 32-bit or 64-bit machines.
+ */
 void SequentialAllocator::free(void *ptr) {
-    char *block_start = ((char *) ptr) - sizeof(void *) - sizeof(uint64_t);
+    char *block_start = ((char *) ptr) - sizeof(FreeListNode<64> *) - sizeof(uint64_t);
     int block_size = *((int *) block_start);
     if (block_size > 64)
         large_list.push((void *) block_start);
