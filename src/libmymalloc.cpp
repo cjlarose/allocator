@@ -11,10 +11,10 @@ int myInit(int num_cores) {
 #endif
 
 #ifdef PROG2
-SequentialAllocator *alloc;
+SynchronizedSequentialAllocator *alloc;
 int myInit(int num_cores) {
     try {
-        alloc = new SequentialAllocator();
+        alloc = new SynchronizedSequentialAllocator();
 #endif
 
 #ifdef PROG3

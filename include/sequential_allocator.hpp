@@ -1,6 +1,7 @@
 #ifndef _SEQ_ALLOC_HPP_
 #define _SEQ_ALLOC_HPP_ 
 
+#include <mutex>
 #include "allocator.hpp"
 #include "free_list.hpp"
 
@@ -27,6 +28,27 @@ void SequentialAllocator::free(void *ptr) {
         large_list.push((void *) block_start);
     else
         small_list.push((void *) block_start);
+}
+
+class SynchronizedSequentialAllocator: public Allocator {
+    public:
+        void *malloc(int size);
+        void free(void *ptr);
+    private:
+        SequentialAllocator alloc;
+        std::mutex mtx;
+};
+
+void *SynchronizedSequentialAllocator::malloc(int size) {
+    mtx.lock();
+    alloc.malloc(size);
+    mtx.unlock();
+}
+
+void SynchronizedSequentialAllocator::free(void *ptr) {
+    mtx.lock();
+    alloc.free(ptr);
+    mtx.unlock();
 }
 
 #endif
