@@ -6,28 +6,27 @@
 #ifdef PROG1
 SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = SequentialAllocator();
+    alloc = new SequentialAllocator();
 #endif
 
 #ifdef PROG2
 SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = SequentialAllocator();
+    alloc = new SequentialAllocator();
 #endif
 
 #ifdef PROG3
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = ParallelAllocator(num_cores);
+    alloc = new ParallelAllocator(num_cores);
 #endif
 
 #ifdef PROG4
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    auto myalloc = ParallelAllocator(num_cores);
+    alloc = new ParallelAllocator(num_cores);
 #endif
 
-    alloc = &myalloc;
     return 0;
 }
 
