@@ -16,6 +16,7 @@ class ParallelAllocator: public Allocator {
         std::vector<SequentialAllocator<>> allocators;
         int next_allocator;
         pthread_key_t key;
+        SequentialAllocator<> *get_allocator();
 };
 
 ParallelAllocator::ParallelAllocator(int num_cores) {
@@ -24,16 +25,21 @@ ParallelAllocator::ParallelAllocator(int num_cores) {
     pthread_key_create(&key, NULL);
 }
 
-void *ParallelAllocator::malloc(int size) {
+SequentialAllocator<> *ParallelAllocator::get_allocator() {
     void *allocator = pthread_getspecific(key);
     if (allocator == NULL) {
         allocator = &allocators.at(next_allocator++);
         pthread_setspecific(key, allocator);
     }
-    return ((SequentialAllocator<> *) allocator)->malloc(size);
+    return (SequentialAllocator<> *) allocator;
+}
+
+void *ParallelAllocator::malloc(int size) {
+    return get_allocator()->malloc(size);
 }
 
 void ParallelAllocator::free(void *ptr) {
+    return get_allocator()->free(ptr);
 }
 
 #endif
