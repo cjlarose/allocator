@@ -2,14 +2,13 @@
 #define _SEQ_ALLOC_HPP_ 
 
 #include <cstddef>
-#include <cstdint>
 #include <assert.h>
 #include "allocator.hpp"
 
 template<std::size_t block_size>
 struct FreeListNode {
-    //uint64_t size = block_size; If I was using a real C++ compiler D:
-    uint64_t size;
+    //int size = block_size; If I was using a real C++ compiler D:
+    int size;
     struct FreeListNode *next;
     char data[block_size];
 };
@@ -20,7 +19,6 @@ class FreeList {
         FreeList();
         void *pop();
         void push(void *node);
-        size_t data_offset;
     private:
         FreeListNode<block_size> nodes[length];
         FreeListNode<block_size> *head;
@@ -34,8 +32,6 @@ FreeList<length, block_size>::FreeList() {
     }
     nodes[length - 1].next = NULL;
     head = nodes;
-
-    data_offset = ((char *) &nodes[0].data) - ((char *) &nodes[0].size);
 }
 
 template<int length, std::size_t block_size>
@@ -73,7 +69,7 @@ void *SequentialAllocator::malloc(int size) {
 }
 
 void SequentialAllocator::free(void *ptr) {
-    char *block_start = ((char *) ptr) - small_list.data_offset;
+    char *block_start = ((char *) ptr) - offsetof(FreeListNode<64>, data);
     int block_size = *((int *) block_start);
     if (block_size > 64)
         large_list.push((void *) block_start);
