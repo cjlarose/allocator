@@ -15,4 +15,15 @@ class ParallelAllocator: public Allocator {
         std::vector<SequentialAllocator<>> allocators;
 };
 
+ParallelAllocator::ParallelAllocator(int num_cores) {
+}
+
+void *ParallelAllocator::malloc(int size) {
+    return NULL;
+}
+
+void ParallelAllocator::free(void *ptr) {
+}
+
+
 #endif
