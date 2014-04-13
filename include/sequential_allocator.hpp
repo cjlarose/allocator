@@ -2,7 +2,6 @@
 #define _SEQ_ALLOC_HPP_ 
 
 #include <cstddef>
-#include <assert.h>
 #include "allocator.hpp"
 
 template<std::size_t block_size>
@@ -45,10 +44,8 @@ FreeList<length, block_size>::FreeList() {
 template<int length, std::size_t block_size>
 void *FreeList<length, block_size>::pop() {
     auto client_block = head;
-    if (client_block == NULL) {
-        assert("Insufficient memory");
+    if (client_block == NULL)
         return NULL;
-    }
     head = client_block->next;
     return &client_block->data;
 }
