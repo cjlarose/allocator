@@ -26,10 +26,10 @@ int myInit(int num_cores) {
 
 #ifdef PROG4
 #include "parallel_allocator.hpp"
-ParallelAllocator *alloc;
+ParallelAllocatorWithOverflow *alloc;
 int myInit(int num_cores) {
     try {
-        alloc = new ParallelAllocator(num_cores);
+        alloc = new ParallelAllocatorWithOverflow(num_cores);
 #endif
 
     } catch (std::bad_alloc& ba) {

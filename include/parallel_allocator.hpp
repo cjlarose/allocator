@@ -42,4 +42,28 @@ void ParallelAllocator::free(void *ptr) {
     return get_allocator()->free(ptr);
 }
 
+class ParallelAllocatorWithOverflow: public Allocator {
+    public:
+        ParallelAllocatorWithOverflow(int num_cores);
+        void *malloc(int size);
+        void free(void *ptr);
+    private:
+        ParallelAllocator par_alloc;
+        SequentialAllocator<> overflow;
+};
+
+ParallelAllocatorWithOverflow::ParallelAllocatorWithOverflow(int num_cores)
+: par_alloc(ParallelAllocator(num_cores)) {
+}
+
+
+void *ParallelAllocatorWithOverflow::malloc(int size) {
+    void *ptr = par_alloc.malloc(size);
+    if (ptr == NULL)
+        return overflow.malloc(size);
+}
+
+void ParallelAllocatorWithOverflow::free(void *ptr) {
+}
+
 #endif
