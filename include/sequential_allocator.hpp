@@ -5,7 +5,7 @@
 #include "allocator.hpp"
 #include "free_list.hpp"
 
-template <int num_small_blocks = 4096, int num_large_blocks = 256>
+template <int num_small_blocks = 2048, int num_large_blocks = 128>
 class SequentialAllocator: public Allocator {
     public:
         void *malloc(int size);
@@ -38,7 +38,7 @@ class SynchronizedSequentialAllocator: public Allocator {
         void *malloc(int size);
         void free(void *ptr);
     private:
-        SequentialAllocator<4096 * 8, 256 * 8> alloc;
+        SequentialAllocator<2048 * 8, 128 * 8> alloc;
         std::mutex mtx;
 };
 
