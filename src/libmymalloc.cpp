@@ -1,6 +1,5 @@
 #include "allocator.hpp"
 #include "sequential_allocator.hpp"
-#include "parallel_allocator.hpp"
 #include "libmymalloc.hpp"
 
 #ifdef PROG1
@@ -18,6 +17,7 @@ int myInit(int num_cores) {
 #endif
 
 #ifdef PROG3
+#include "parallel_allocator.hpp"
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
     try {
@@ -25,6 +25,7 @@ int myInit(int num_cores) {
 #endif
 
 #ifdef PROG4
+#include "parallel_allocator.hpp"
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
     try {
