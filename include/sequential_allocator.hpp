@@ -24,6 +24,10 @@ class FreeList {
         FreeListNode<block_size> *head;
 };
 
+/*
+ * Initialize list by making a singly-linked list and tagging each node with a
+ * block size.
+ */
 template<int length, std::size_t block_size>
 FreeList<length, block_size>::FreeList() {
     for (int i = 0; i < length; ++i) {
@@ -34,6 +38,10 @@ FreeList<length, block_size>::FreeList() {
     head = nodes;
 }
 
+/*
+ * Pop the head of the list off and give the data member to the caller. Advance
+ * the head pointer.
+ */
 template<int length, std::size_t block_size>
 void *FreeList<length, block_size>::pop() {
     auto client_block = head;
