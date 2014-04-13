@@ -6,26 +6,34 @@
 #ifdef PROG1
 SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    alloc = new SequentialAllocator();
+    try {
+        alloc = new SequentialAllocator();
 #endif
 
 #ifdef PROG2
 SequentialAllocator *alloc;
 int myInit(int num_cores) {
-    alloc = new SequentialAllocator();
+    try {
+        alloc = new SequentialAllocator();
 #endif
 
 #ifdef PROG3
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    alloc = new ParallelAllocator(num_cores);
+    try {
+        alloc = new ParallelAllocator(num_cores);
 #endif
 
 #ifdef PROG4
 ParallelAllocator *alloc;
 int myInit(int num_cores) {
-    alloc = new ParallelAllocator(num_cores);
+    try {
+        alloc = new ParallelAllocator(num_cores);
 #endif
+
+    } catch (std::bad_alloc& ba) {
+        return -1;
+    }
 
     return 0;
 }
