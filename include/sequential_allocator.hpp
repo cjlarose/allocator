@@ -47,7 +47,9 @@ void *FreeList<length, block_size>::pop() {
 
 template<int length, std::size_t block_size>
 void FreeList<length, block_size>::push(void *node) {
+    auto old_head = head;
     head = (FreeListNode<block_size> *) node;
+    head->next = old_head;
 }
 
 class SequentialAllocator: public Allocator {
