@@ -89,20 +89,23 @@ struct timeval time_seq_alloc(Allocator *alloc, int p) {
     return elapsed;
 }
 
-void par_test(int p) {
+double par_test(int p) {
     ParallelAllocator alloc = ParallelAllocator(p);
     struct timeval elapsed = time_par_alloc(&alloc, p);
     double elapsed_d = elapsed.tv_sec + elapsed.tv_usec / 1000000.0;
-    std::cout << "(" << p << ", " << elapsed_d << ")\n";
+    return elapsed_d;
 }
 
 int main() {
     Allocator *alloc;
+
+    double seq_times[8];
     std::cout << "Program 1: Sequential\n";
     for (int p = 1; p <= 8; ++p) {
         alloc = new SequentialAllocator<2048, 128>();
         struct timeval elapsed = time_seq_alloc(alloc, p);
         double elapsed_d = elapsed.tv_sec + elapsed.tv_usec / 1000000.0;
+        seq_times[p-1] = elapsed_d;
         std::cout << "(" << p << ", " << elapsed_d << ")\n";
     }
 
@@ -111,12 +114,13 @@ int main() {
         alloc = new SynchronizedSequentialAllocator<2048 * 8, 128 * 8>();
         struct timeval elapsed = time_par_alloc(alloc, p);
         double elapsed_d = elapsed.tv_sec + elapsed.tv_usec / 1000000.0;
-        std::cout << "(" << p << ", " << elapsed_d << ")\n";
+        std::cout << "(" << p << ", " << (seq_times[p-1] / elapsed_d) << ")\n";
     }
 
     std::cout << "Program 3: Local Lists\n";
     for (int p = 1; p <= 8; ++p) {
-        par_test(p);
+        double elapsed_d = par_test(p);
+        std::cout << "(" << p << ", " << (seq_times[p-1] / elapsed_d) << ")\n";
     }
 
     return 0;
