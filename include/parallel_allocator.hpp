@@ -61,6 +61,7 @@ void *ParallelAllocatorWithOverflow::malloc(int size) {
     void *ptr = par_alloc.malloc(size);
     if (ptr == NULL)
         return overflow.malloc(size);
+    return ptr;
 }
 
 void ParallelAllocatorWithOverflow::free(void *ptr) {
