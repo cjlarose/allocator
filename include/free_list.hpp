@@ -5,13 +5,13 @@
 
 template<std::size_t block_size>
 struct FreeListNode {
-    //int size = block_size; If I was using a real C++ compiler D:
     int size;
+    int flags;
     struct FreeListNode *next;
     char data[block_size];
 };
 
-template<int length, std::size_t block_size>
+template<int length, std::size_t block_size, int flags = 0>
 class FreeList {
     public:
         FreeList();
@@ -26,11 +26,12 @@ class FreeList {
  * Initialize list by making a singly-linked list and tagging each node with a
  * block size.
  */
-template<int length, std::size_t block_size>
-FreeList<length, block_size>::FreeList() {
+template<int length, std::size_t block_size, int flags>
+FreeList<length, block_size, flags>::FreeList() {
     for (int i = 0; i < length; ++i) {
         nodes[i].next = &nodes[i+1];
         nodes[i].size = block_size;
+        nodes[i].flags = flags;
     }
     nodes[length - 1].next = NULL;
     head = nodes;
@@ -40,8 +41,8 @@ FreeList<length, block_size>::FreeList() {
  * Pop the head of the list off and give the data member to the caller. Advance
  * the head pointer.
  */
-template<int length, std::size_t block_size>
-void *FreeList<length, block_size>::pop() {
+template<int length, std::size_t block_size, int flags>
+void *FreeList<length, block_size, flags>::pop() {
     auto client_block = head;
     if (client_block == NULL)
         return NULL;
@@ -49,8 +50,8 @@ void *FreeList<length, block_size>::pop() {
     return &client_block->data;
 }
 
-template<int length, std::size_t block_size>
-void FreeList<length, block_size>::push(void *node) {
+template<int length, std::size_t block_size, int flags>
+void FreeList<length, block_size, flags>::push(void *node) {
     auto old_head = head;
     head = (FreeListNode<block_size> *) node;
     head->next = old_head;
