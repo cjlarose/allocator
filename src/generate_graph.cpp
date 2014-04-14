@@ -27,7 +27,7 @@ void *allocate(void *data) {
     Allocator *alloc = (Allocator *) data;
     void* ptrs[SM_BLOCKS_PER_THREAD + LG_BLOCKS_PER_THREAD];
 
-    for (int round = 0; round < 16384; ++round) {
+    for (int round = 0; round < 1024; ++round) {
         int i = 0;
         for (; i < SM_BLOCKS_PER_THREAD; ++i) {
             ptrs[i] = alloc->malloc(64);
@@ -108,6 +108,13 @@ struct timeval time_seq_alloc(Allocator *alloc, int p) {
     return elapsed;
 }
 
+void par_test(int p) {
+    ParallelAllocator alloc = ParallelAllocator(p);
+    struct timeval elapsed = time_par_alloc(&alloc, p);
+    double elapsed_d = elapsed.tv_sec + elapsed.tv_usec / 1000000.0;
+    std::cout << "(" << p << ", " << elapsed_d << ")\n";
+}
+
 int main() {
     Allocator *alloc;
     std::cout << "Program 1: Sequential\n";
@@ -128,10 +135,7 @@ int main() {
 
     std::cout << "Program 3: Local Lists\n";
     for (int p = 1; p <= 8; ++p) {
-        alloc = new ParallelAllocator(p);
-        struct timeval elapsed = time_par_alloc(alloc, p);
-        double elapsed_d = elapsed.tv_sec + elapsed.tv_usec / 1000000.0;
-        std::cout << "(" << p << ", " << elapsed_d << ")\n";
+        par_test(p);
     }
 
     return 0;
