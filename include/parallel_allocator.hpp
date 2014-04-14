@@ -64,6 +64,11 @@ void *ParallelAllocatorWithOverflow::malloc(int size) {
 }
 
 void ParallelAllocatorWithOverflow::free(void *ptr) {
+    FreeListNode<64> *node = (FreeListNode<64> *) (((char *) ptr) - offsetof(FreeListNode<64>, data));
+    if (node->flags & SYNCHRONIZED)
+        overflow.free(ptr);
+    else
+        par_alloc.free(ptr);
 }
 
 #endif
