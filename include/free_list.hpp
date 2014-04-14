@@ -11,10 +11,15 @@ struct FreeListNode {
     char data[block_size];
 };
 
-template<int length, std::size_t block_size, int flags = 0>
+enum FREE_LIST_FLAG {
+    UNSYNCHRONIZED = 1,
+    SYNCHRONIZED = 2
+};
+
+template<int length, std::size_t block_size>
 class FreeList {
     public:
-        FreeList();
+        FreeList(int flags);
         void *pop();
         void push(void *node);
     private:
@@ -26,8 +31,8 @@ class FreeList {
  * Initialize list by making a singly-linked list and tagging each node with a
  * block size.
  */
-template<int length, std::size_t block_size, int flags>
-FreeList<length, block_size, flags>::FreeList() {
+template<int length, std::size_t block_size>
+FreeList<length, block_size>::FreeList(int flags) {
     for (int i = 0; i < length; ++i) {
         nodes[i].next = &nodes[i+1];
         nodes[i].size = block_size;
@@ -41,8 +46,8 @@ FreeList<length, block_size, flags>::FreeList() {
  * Pop the head of the list off and give the data member to the caller. Advance
  * the head pointer.
  */
-template<int length, std::size_t block_size, int flags>
-void *FreeList<length, block_size, flags>::pop() {
+template<int length, std::size_t block_size>
+void *FreeList<length, block_size>::pop() {
     auto client_block = head;
     if (client_block == NULL)
         return NULL;
@@ -50,8 +55,8 @@ void *FreeList<length, block_size, flags>::pop() {
     return &client_block->data;
 }
 
-template<int length, std::size_t block_size, int flags>
-void FreeList<length, block_size, flags>::push(void *node) {
+template<int length, std::size_t block_size>
+void FreeList<length, block_size>::push(void *node) {
     auto old_head = head;
     head = (FreeListNode<block_size> *) node;
     head->next = old_head;

@@ -8,12 +8,26 @@
 template <int num_small_blocks = 2048, int num_large_blocks = 128>
 class SequentialAllocator: public Allocator {
     public:
+        SequentialAllocator();
+        SequentialAllocator(int flags);
         void *malloc(int size);
         void free(void *ptr);
     private:
         FreeList<num_small_blocks, 64> small_list;
         FreeList<num_large_blocks, 1024> large_list;
 };
+
+template <int sm_cnt, int lg_cnt>
+SequentialAllocator<sm_cnt, lg_cnt>::SequentialAllocator()
+: small_list(FreeList<sm_cnt, 64>(UNSYNCHRONIZED)),
+  large_list(FreeList<lg_cnt, 1024>(UNSYNCHRONIZED)) {
+}
+
+template <int sm_cnt, int lg_cnt>
+SequentialAllocator<sm_cnt, lg_cnt>::SequentialAllocator(int flags)
+: small_list(FreeList<sm_cnt, 64>(flags)),
+  large_list(FreeList<lg_cnt, 1024>(flags)) {
+}
 
 template <int sm_cnt, int lg_cnt>
 void *SequentialAllocator<sm_cnt, lg_cnt>::malloc(int size) {
@@ -36,12 +50,18 @@ void SequentialAllocator<sm_cnt, lg_cnt>::free(void *ptr) {
 template <int num_small_blocks = 2048, int num_large_blocks = 128>
 class SynchronizedSequentialAllocator: public Allocator {
     public:
+        SynchronizedSequentialAllocator();
         void *malloc(int size);
         void free(void *ptr);
     private:
         SequentialAllocator<num_small_blocks, num_large_blocks> alloc;
         std::mutex mtx;
 };
+
+template <int sm_cnt, int lg_cnt>
+SynchronizedSequentialAllocator<sm_cnt, lg_cnt>::SynchronizedSequentialAllocator()
+: alloc(SequentialAllocator<sm_cnt, lg_cnt>(SYNCHRONIZED)) {
+}
 
 template <int sm_cnt, int lg_cnt>
 void *SynchronizedSequentialAllocator<sm_cnt, lg_cnt>::malloc(int size) {

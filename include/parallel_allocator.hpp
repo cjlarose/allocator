@@ -49,7 +49,7 @@ class ParallelAllocatorWithOverflow: public Allocator {
         void free(void *ptr);
     private:
         ParallelAllocator par_alloc;
-        SequentialAllocator<> overflow;
+        SynchronizedSequentialAllocator<> overflow;
 };
 
 ParallelAllocatorWithOverflow::ParallelAllocatorWithOverflow(int num_cores)
