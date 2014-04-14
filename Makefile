@@ -32,8 +32,9 @@ graph: $(SRC_DIR)/generate_graph.cpp $(HEADERS)
 test: libmymalloc
 	bash tests/test.sh
 
-#test: libmymalloc1
-#	gcc -g -pthread -o test sample_test.c -L. -lmymalloc1 -lstdc++
+submission: clean
+	mkdir allocator
+	cp -R src include build Makefile report.tex report.pdf allocator
 
 clean:
-	rm -f $(BUILD_DIR)/* *.a generate_graph
+	rm -f $(BUILD_DIR)/* *.a graph
