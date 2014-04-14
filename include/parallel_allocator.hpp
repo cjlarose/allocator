@@ -25,7 +25,7 @@ ParallelAllocator::ParallelAllocator(int num_cores) {
     pthread_key_create(&key, NULL);
 }
 
-SequentialAllocator<> *ParallelAllocator::get_allocator() {
+inline SequentialAllocator<> *ParallelAllocator::get_allocator() {
     void *allocator = pthread_getspecific(key);
     if (allocator == NULL) {
         allocator = &allocators.at(next_allocator++);
