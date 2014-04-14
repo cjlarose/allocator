@@ -27,7 +27,7 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 	ar -rv libmymalloc4.a $(BUILD_DIR)/libmymalloc4.o
 
 graph: $(SRC_DIR)/generate_graph.cpp $(HEADERS)
-	$(CC) $(CCFLAGS) -I $(INCLUDE_DIR) -pthread -o graph $<
+	$(CC) $(CCFLAGS) -O2 -I $(INCLUDE_DIR) -pthread -o graph $<
 
 test: libmymalloc
 	bash tests/test.sh
