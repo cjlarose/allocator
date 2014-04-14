@@ -6,20 +6,6 @@
 #include "sequential_allocator.hpp"
 #include "parallel_allocator.hpp"
 
-/*
-void* allocate(void* ptr) {
-    struct thread_var* vars = (struct thread_var*) ptr;
-    int i;
-    for (i = vars->offset; i < (vars->offset + vars->amount); i++) {
-        vars->ptrs[i] = myMalloc(SIZE * sizeof(char));
-        assert(vars->ptrs[i] != NULL);
-    }
-    for (i = vars->offset; i < (vars->offset + vars->amount); i++) {
-        myFree(vars->ptrs[i]);
-    }
-}
-*/
-
 const int SM_BLOCKS_PER_THREAD = 2048;
 const int LG_BLOCKS_PER_THREAD = 128;
 
@@ -29,19 +15,14 @@ void *allocate(void *data) {
 
     for (int round = 0; round < 1024; ++round) {
         int i = 0;
-        for (; i < SM_BLOCKS_PER_THREAD; ++i) {
+        for (; i < SM_BLOCKS_PER_THREAD; ++i)
             ptrs[i] = alloc->malloc(64);
-            assert(ptrs[i] != NULL);
-        }
 
-        for (; i < LG_BLOCKS_PER_THREAD + SM_BLOCKS_PER_THREAD; ++i) {
+        for (; i < LG_BLOCKS_PER_THREAD + SM_BLOCKS_PER_THREAD; ++i)
             ptrs[i] = alloc->malloc(1024);
-            assert(ptrs[i] != NULL);
-        }
 
-        for (int j = 0; j < SM_BLOCKS_PER_THREAD + LG_BLOCKS_PER_THREAD; ++j) {
+        for (int j = 0; j < SM_BLOCKS_PER_THREAD + LG_BLOCKS_PER_THREAD; ++j)
             alloc->free(ptrs[j]);
-        }
     }
 
 }
