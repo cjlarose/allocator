@@ -1,0 +1,69 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{listings}
+
+\title{Program 2: Multithreaded Memory Allocator}
+
+\author{Chris LaRose}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+The following plot shows the result of measuring the speedup of the lock-based (shared list) memory allocator and the course-grain (thread-local free list) allocator relative to the sequential implementation. All programs were compiled with gcc's -O2 flag.
+\begin{center}
+  \makebox[\textwidth]{
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.8\paperwidth,
+    height=12cm,
+    xlabel={Number of Cores},
+    ylabel={Speedup},
+    legend style={at={(0.03,0.97)}, anchor=north west},
+    xtick={1,...,8}
+]
+\addplot
+coordinates {
+(1, 0.251507)
+(2, 0.0335341)
+(3, 0.0223449)
+(4, 0.0106975)
+(5, 0.0127043)
+(6, 0.0141685)
+(7, 0.012613)
+(8, 0.0125397)
+};
+\addplot+[error bars/.cd,
+    y dir=both,y explicit]
+coordinates {
+(1, 0.636825)
+(2, 1.09659)
+(3, 1.70637)
+(4, 2.08352)
+(5, 1.47653)
+(6, 1.82708)
+(7, 2.14589)
+(8, 2.3879)
+};
+\legend{Lock-based,Thread-Local Lists}
+\end{axis}
+
+\end{tikzpicture}
+
+
+  }
+\end{center}
+
+
+\end{document}
+
