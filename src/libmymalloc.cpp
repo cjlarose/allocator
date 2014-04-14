@@ -10,10 +10,10 @@ int myInit(int num_cores) {
 #endif
 
 #ifdef PROG2
-SynchronizedSequentialAllocator *alloc;
+SynchronizedSequentialAllocator<2048 * 8, 128 * 8> *alloc;
 int myInit(int num_cores) {
     try {
-        alloc = new SynchronizedSequentialAllocator();
+        alloc = new SynchronizedSequentialAllocator<2048 * 8, 128 * 8> ();
 #endif
 
 #ifdef PROG3

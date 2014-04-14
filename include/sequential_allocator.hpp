@@ -33,23 +33,26 @@ void SequentialAllocator<sm_cnt, lg_cnt>::free(void *ptr) {
         small_list.push((void *) block_start);
 }
 
+template <int num_small_blocks = 2048, int num_large_blocks = 128>
 class SynchronizedSequentialAllocator: public Allocator {
     public:
         void *malloc(int size);
         void free(void *ptr);
     private:
-        SequentialAllocator<2048 * 8, 128 * 8> alloc;
+        SequentialAllocator<num_small_blocks, num_large_blocks> alloc;
         std::mutex mtx;
 };
 
-void *SynchronizedSequentialAllocator::malloc(int size) {
+template <int sm_cnt, int lg_cnt>
+void *SynchronizedSequentialAllocator<sm_cnt, lg_cnt>::malloc(int size) {
     mtx.lock();
     void *ptr = alloc.malloc(size);
     mtx.unlock();
     return ptr;
 }
 
-void SynchronizedSequentialAllocator::free(void *ptr) {
+template <int sm_cnt, int lg_cnt>
+void SynchronizedSequentialAllocator<sm_cnt, lg_cnt>::free(void *ptr) {
     mtx.lock();
     alloc.free(ptr);
     mtx.unlock();
