@@ -26,6 +26,9 @@ libmymalloc4: $(SRC_DIR)/libmymalloc.cpp $(HEADERS)
 	$(CC) $(CCFLAGS) -I $(INCLUDE_DIR) -pthread -D PROG4 -o $(BUILD_DIR)/libmymalloc4.o -c $<
 	ar -rv libmymalloc4.a $(BUILD_DIR)/libmymalloc4.o
 
+graph: $(SRC_DIR)/generate_graph.cpp $(HEADERS)
+	$(CC) $(CCFLAGS) -I $(INCLUDE_DIR) -pthread -o graph $<
+
 test: libmymalloc
 	bash tests/test.sh
 
@@ -33,4 +36,4 @@ test: libmymalloc
 #	gcc -g -pthread -o test sample_test.c -L. -lmymalloc1 -lstdc++
 
 clean:
-	rm -f $(BUILD_DIR)/* *.a
+	rm -f $(BUILD_DIR)/* *.a generate_graph
